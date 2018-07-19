@@ -1,0 +1,6 @@
+﻿  Source.cpp
+c:\users\gpros.laptop-6hnffit3\documents\github\eda_ejerciciosverano\recursivo_fugadelaprision\recursivo_fugadelaprision\source.cpp(17): warning C4101: 'sol': variable local sin referencia
+c:\users\gpros.laptop-6hnffit3\documents\github\eda_ejerciciosverano\recursivo_fugadelaprision\recursivo_fugadelaprision\source.cpp(48): warning C4018: '<': no coinciden signed/unsigned
+c:\users\gpros.laptop-6hnffit3\documents\github\eda_ejerciciosverano\recursivo_fugadelaprision\recursivo_fugadelaprision\source.cpp(39): warning C4101: 'prisioner': variable local sin referencia
+c:\users\gpros.laptop-6hnffit3\documents\github\eda_ejerciciosverano\recursivo_fugadelaprision\recursivo_fugadelaprision\source.cpp(33): warning C4715: 'resolver': no todas las rutas de acceso de control devuelven un valor
+  Recursivo_FugaDeLaPrision.vcxproj -> C:\Users\gpros.LAPTOP-6HNFFIT3\Documents\GitHub\EDA_EjerciciosVerano\Recursivo_FugaDeLaPrision\Debug\Recursivo_FugaDeLaPrision.exe

@@ -12,12 +12,8 @@ int resolver(std::vector<int> const& v) {
 	int maxLenght = 1;
 	int currentLenght = 1;
 	int i = 1;
-
-	/* f(i) = v.size() - 1 - i*/ 
-	/*Invariante --> 1 <= i <= v.size() 
-	&& currentLenght = forall k : 0 <= k < v.size() : currentLenght < v.size() 
-	&& maxLenght = forall t : 0 <= t < v.size() : maxLenght >= currentLenght*/ 
-
+	
+	//I --> 1<= i <= v.size() && maxLenght = 1 <= maxLenght <= currentLenght && currentLenght = 1 <= currentLenght <= v.size()
 	while (i < v.size()) {
 		if (v[i - 1] >= v[i]) {
 			++currentLenght;
@@ -31,7 +27,7 @@ int resolver(std::vector<int> const& v) {
 			currentLenght = 1;
 
 		}
-		// R --> 1 <= currentLengt <= maxLenght
+		// R --> 1 <= currentLenght <= maxLenght
 		++i;
 	}
 	

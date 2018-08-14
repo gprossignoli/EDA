@@ -17,16 +17,18 @@ int resolver(std::vector<int> const& v) {
 	int iniSeg = 0;
 	int maxSeg = 0;
 	
-	while (i < v.size() && (v.size() - 1) - i >= maxSeg ) {
+	while (i < v.size()) {
 		auto it = map.find(v[i]);
-		if (it == map.end())
+		
+		if (it == map.end()) {
 			map.insert({ v[i],i });
+		}
 		else {
-			int tamCurrentSeg = (it->second - iniSeg) + (i - it->second);
-			if (tamCurrentSeg > maxSeg) {
-				maxSeg = tamCurrentSeg;
-				iniSeg = i;
+			int tamSeg = ((i - 1) - iniSeg + 1);
+			if (tamSeg > maxSeg) {
+				maxSeg = tamSeg;
 			}
+			iniSeg = it->second + 1;
 			it->second = i;
 		}
 		++i;
@@ -47,9 +49,9 @@ void resuelveCaso() {
 		chapters.push_back(c);
 	}
 
-	int sol = resolver(chapters);
+	int daysWithoutChaptersRepeated = resolver(chapters);
 	// escribir sol
-	std::cout << sol << '\n';
+	std::cout << daysWithoutChaptersRepeated << '\n';
 
 
 }

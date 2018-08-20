@@ -8,94 +8,100 @@
 #include <vector>
 #include <string>
 
-bool validSolution(std::string t) {
-	int nR = 0, nB = 0, nG = 0;
 
-	if (t[0] != 'r')
+typedef struct {
+	int r = 0;
+	int b = 0;
+	int g = 0;
+}tCubes;
+
+
+bool validSolution(std::string sol, tCubes const& c, tCubes usedCubes) {
+	if (usedCubes.r <= (usedCubes.b + usedCubes.g))
 		return false;
-
-	for (int i = 0; i < t.size(); ++i) {
-		if (t[i] == 'r')
-			++nR;
-		else if (t[i] == 'b')
-			++nB;
-		else if (t[i] == 'g')
-			++nG;
-	}
-
-	if (nR <= (nB + nG))
-		return false;
-
+	
 	return true;
 }
 
-void printTower(std::string t) {
+void printTower(std::string tower) {
 	int i = 0;
-	for (i; i < t.size() - 1; ++i) {
-		if (t[i] == 'r')
+	for (i; i < tower.size() - 1; ++i) {
+		if (tower[i] == 'r')
 			std::cout << "rojo ";
-		else if (t[i] == 'b')
+		else if (tower[i] == 'b')
 			std::cout << "azul ";
-		else if (t[i] == 'g')
+		else if (tower[i] == 'g')
 			std::cout << "verde ";
 	}
 
-	if (t[i] == 'r')
+	if (tower[i] == 'r')
 		std::cout << "rojo\n";
-	else if (t[i] == 'b')
+	else if (tower[i] == 'b')
 		std::cout << "azul\n";
-	else if (t[i] == 'g')
+	else if (tower[i] == 'g')
 		std::cout << "verde\n";
-	
 }
 
-void buildTower(std::string t, const int hT, int b, int r, int g, int cH,bool & noPrint) {
+void generateSolutions(const int hT, tCubes const& c,tCubes usedCubes,std::string sol,int cH,bool & printed) {
 	
-	if (cH == hT) {
-		if (validSolution(t)) {
-			printTower(t);
-			noPrint = false;
+	if (hT == cH) {
+		if (validSolution(sol, c, usedCubes)) {
+			printTower(sol);
+			printed = true;
 		}
 	}
 
 	else {
-		if (b > 0) {
-			buildTower(t + "b", hT, b - 1, r, g, cH + 1,noPrint);
+		if (usedCubes.b < c.b) {
+			++usedCubes.b;
+			generateSolutions(hT, c, usedCubes, sol + 'b', cH + 1,printed);
+			--usedCubes.b;
 		}
-		if (r > 0) {
-			buildTower(t + "r", hT, b, r - 1, g, cH + 1,noPrint);
+		if (usedCubes.r < c.r) {
+			++usedCubes.r;
+			generateSolutions(hT, c, usedCubes, sol + 'r', cH + 1,printed);
+			--usedCubes.r;
 		}
-		if (g > 0 && g > b) {
-			if (t.back() != 'g')
-				buildTower(t + "g", hT, b, r, g-1, cH + 1,noPrint);
+		if (usedCubes.g < c.g && sol.size()-1 != 'g' && usedCubes.g + 1 <= usedCubes.b) {
+			++usedCubes.g;
+			generateSolutions(hT, c, usedCubes, sol + 'g', cH + 1,printed);
+			--usedCubes.g;
 		}
 	}
 }
-// función que resuelve el problema
-void resolver(std::string & t,const int hT,int b,int r, int g) {
-	const int currentHeight = 0;
-	bool noPrint = true;
-	buildTower(t, hT, b, r, g, currentHeight,noPrint);
-	if (noPrint)
+
+
+void buildTower(const int hT, tCubes const& c) {
+	std::string tower;
+	tCubes usedCubes;
+	bool printed = false;
+	int currentHeight = 1;
+	tower.push_back('r');
+	++usedCubes.r;
+	generateSolutions(hT, c, usedCubes, tower, currentHeight,printed);
+	if (!printed)
 		std::cout << "SIN SOLUCION\n";
+	std::cout << '\n';
+
 }
 
-// Resuelve un caso de prueba, leyendo de la entrada la
-// configuración, y escribiendo la respuesta
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int heighOfTower, blue, red, green;
-	std::string tower;
+	int heightOfTower;
+	tCubes cubes;
+	
+	std::cin >> heightOfTower;
+	std::cin >> cubes.b >> cubes.r >> cubes.g;
 
-	std::cin >> heighOfTower >> blue >> red >> green;
-	if (heighOfTower == 0)
+	if (heightOfTower == 0 && cubes.b == 0 && cubes.r == 0 && cubes.g == 0)
 		return false;
 
-	resolver(tower,heighOfTower,blue,red,green);
-
-	std::cout << '\n';
-	// escribir sol
-
+	if (heightOfTower < 2 || cubes.r == 0)
+		std::cout << "SIN SOLUCION\n";
+	
+	else {
+		buildTower(heightOfTower, cubes);
+	}
 	return true;
 
 }

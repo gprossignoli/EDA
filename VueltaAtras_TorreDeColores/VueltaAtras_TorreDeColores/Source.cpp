@@ -62,9 +62,9 @@ void generateSolutions(const int hT, tCubes const& c,tCubes usedCubes,std::strin
 			generateSolutions(hT, c, usedCubes, sol + 'r', cH + 1,printed);
 			--usedCubes.r;
 		}
-		if (usedCubes.g < c.g && sol.size()-1 != 'g' && usedCubes.g + 1 <= usedCubes.b) {
+		if (usedCubes.g < c.g && sol.back() != 'g' && usedCubes.g + 1 <= usedCubes.b) {
 			++usedCubes.g;
-			generateSolutions(hT, c, usedCubes, sol + 'g', cH + 1,printed);
+			generateSolutions(hT, c, usedCubes, sol + 'g', cH + 1, printed);
 			--usedCubes.g;
 		}
 	}
@@ -76,9 +76,11 @@ void buildTower(const int hT, tCubes const& c) {
 	tCubes usedCubes;
 	bool printed = false;
 	int currentHeight = 1;
+	
 	tower.push_back('r');
 	++usedCubes.r;
 	generateSolutions(hT, c, usedCubes, tower, currentHeight,printed);
+	
 	if (!printed)
 		std::cout << "SIN SOLUCION\n";
 	std::cout << '\n';

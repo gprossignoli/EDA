@@ -9,7 +9,7 @@
 
 
 // función que resuelve el problema
-int resolver(std::vector<int> & v, int ini, int end) {
+int mergeSort(std::vector<int> & v, int ini, int end) {
 	int moves = 0;
 	
 	if (v[ini] != ini - 1) {
@@ -44,7 +44,7 @@ bool resuelveCaso() {
 		battleFormation.push_back(spaceship);
 	}
 	
-	int necessaryMoves = resolver(battleFormation, 0, battleFormation.size()-1 );
+	int necessaryMoves = mergeSort(battleFormation, 0, battleFormation.size()-1 );
 
 
 	// escribir sol

@@ -11,67 +11,93 @@
 class DrivingSchool {
 	typedef std::string teacher;
 	typedef std::string student;
-	typedef std::pair < teacher, int> studentInfo;
+	typedef int points;
 
-	std::map<student, studentInfo> students;
-	std::unordered_map<teacher, std::vector<student>> teachers;
+private:
+	std::unordered_map < teacher, std::map<student, points>> teachers; 
+	std::unordered_map<student, teacher> students;
 
 public:
 	DrivingSchool() {
 		teachers.insert({ "PACO",{} });
-		teachers.insert({ "JUAN",{} });
 		teachers.insert({ "RAMON",{} });
+		teachers.insert({ "JUAN",{} });
 		teachers.insert({ "ISABEL",{} });
 	}
 
-	void signUpStudent(const student s, const teacher t) {
-		auto itToStudents = students.find(s);
+	void alta(const student s, const teacher t) {
+		auto itToStudent = students.find(s);
 
-		if (itToStudents == students.end()) { //new student
-			students.insert({ s,{t,0} });
-			auto itToTeachers = teachers.find(t);
-			itToTeachers->second.push_back(s);
+		if (itToStudent == students.end()) { //new student
+			students.insert({ s,t });
+
+			auto itToTeacher = teachers.find(t);
+			itToTeacher->second.insert({ s,0 });
 		}
 
 		else { //change of teacher
-			teacher oldTeacher = itToStudents->second.first;
-			itToStudents->second.first = t;
+			auto itToOldTeacher = teachers.find(itToStudent->second);
+			int points = itToOldTeacher->second.find(s)->second;
+			itToOldTeacher->second.erase(s);
 
-			//erase the student from the old teacher
-			auto itToOldTeacher = teachers.find(oldTeacher);
-			auto aux = itToOldTeacher->second.begin();
-			while (*aux != s) {
-				++aux;
-			}
-			itToOldTeacher->second.erase(aux);
-
-			//insert the student into the new teacher
 			auto itToNewTeacher = teachers.find(t);
-			itToNewTeacher->second.push_back(itToStudents->first);
+			itToNewTeacher->second.insert({ s,points });
+
+			itToStudent->second = t;
 		}
 	}
 
-	bool is_student(const student s, const teacher t) {
-		auto itToStudents = students.find(s);
-		return t == itToStudents->second.first;
+	const bool es_alumno(const student s, const teacher t) const{
+		auto itToStudent = students.find(s);
+
+		return itToStudent->second == t;
 	}
 
-	int checkPoints(const student s) {
-		auto itToStudents = students.find(s);
-
-		if (itToStudents == students.end())
-			throw new std::domain_error("El alumno A no esta matriculado");
-
-		return itToStudents->second.second;
+	const int puntuacion(const student s) const{
+		auto itToStudent = students.find(s);
+		if (itToStudent == students.end())
+			throw std::domain_error("El alumno A no esta matriculado");
+		
+		auto itToTeacher = teachers.find(itToStudent->second);
+		return itToTeacher->second.find(s)->second;
 	}
+
+	void actualizar(const student s, const points p) {
+		auto itToStudent = students.find(s);
+		if (itToStudent == students.end()) 
+			throw std::domain_error("El alumno A no esta matriculado");
 	
-	void updatePoints(const student s, const int n) {
-		auto itToStudents = students.find(s);
+		auto itToTeacher = teachers.find(itToStudent->second);
+		auto itToPoints = itToTeacher->second.find(s);
+		itToPoints->second += p;
+		
+	}
 
-		if (itToStudents == students.end())
-			throw new std::domain_error("El alumno A no esta matriculado");
+	const std::vector<student> examen(const teacher t, const points p) const{
+		std::vector<student> examList;
+		auto itToTeacher = teachers.find(t);
+		auto itToStudents = itToTeacher->second.begin();
 
-		itToStudents->second.second += n;
+		while (itToStudents != itToTeacher->second.end()) {
+			if (itToStudents->second >= p)
+				examList.push_back(itToStudents->first);
+			
+			++itToStudents;
+		}
+		return examList;
+	}
+
+	void aprobar(const student s) {
+		auto itToStudent = students.find(s);
+		if (itToStudent == students.end())
+			throw std::domain_error("El alumno A no esta matriculado");
+
+		
+		auto itToTeacher = teachers.find(itToStudent->second);
+		itToTeacher->second.erase(s);
+
+		students.erase(s);
+		
 	}
 };
 #endif

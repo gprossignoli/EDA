@@ -7,40 +7,41 @@
 #include <fstream>
 #include <vector>
 
-
-struct tSolucion {
-	int sum = 0;
-	bool degraded = true;
-};
-// función que resuelve el problema
-tSolucion resolver(std::vector<int> const& v, int ini, int end) {
-	tSolucion sol;
+typedef struct {
+	int sum;
+	bool isDegraded;
+}tSol;
+tSol resolver(std::vector<int> const& v,int ini,int end) {
+	tSol sol;
 
 	if (ini + 1 == end) {
-		if (v[ini] >= v[end]) {
-			sol.degraded = false;
+		sol.sum = v[ini] + v[end];
+		if (v[ini] < v[end])
+			sol.isDegraded = true;
+		else
+			sol.isDegraded = false;
+	}
+
+	else {
+		int mid = (ini + end) / 2;
+
+		tSol left = resolver(v, ini, mid);
+		if (left.isDegraded) {
+			tSol rigth = resolver(v, mid+1, end);
+			if (rigth.isDegraded && left.sum < rigth.sum) {
+				sol.sum = left.sum + rigth.sum;
+				sol.isDegraded = true;
+			}
+			else {
+				sol.sum = 0;
+				sol.isDegraded = false;
+			}
 		}
-		sol.sum += v[ini] + v[end];
-		return sol;
+		else {
+			sol.sum = 0;
+			sol.isDegraded = false;
+		}
 	}
-
-	if (!sol.degraded) {
-		return sol;
-	}
-
-	int half = (ini + end + 1) / 2;
-	tSolucion left = resolver(v, ini, half-1);
-	if (!left.degraded)
-		return left;
-		
-	tSolucion right	= resolver(v, half, end);
-	if (!right.degraded)
-		return right;
-
-	if (left.sum >= right.sum) {
-		sol.degraded = false;
-	}
-	sol.sum += left.sum + right.sum;
 
 	return sol;
 }
@@ -48,34 +49,31 @@ tSolucion resolver(std::vector<int> const& v, int ini, int end) {
 // Resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
 bool resuelveCaso() {
-	int nRows, nCols, row;
-	
-	tSolucion sol;
-
-	std::cin >> nRows;
+	// leer los datos de la entrada
+	int row, col;
+	std::cin >> row >> col;
 	if (!std::cin)
 		return false;
-	std::cin >> nCols;
-	
-	int i = 0;
-	while (i < nRows) {
-		std::vector<int> v;
-		for (int j = 0; j < nCols; ++j) {
-			std::cin >> row;
-			v.push_back(row);
+
+	if (row > 0 && col > 1) {
+		int r = 0;
+		bool ok = true;
+		while (r < row) {
+			std::vector<int> v;
+			for (int c = 0; c < col; ++c) {
+				int elem;
+				std::cin >> elem;
+				v.push_back(elem);
+			}
+			if (!resolver(v, 0, v.size() - 1).isDegraded)
+				ok = false;
+			++r;
 		}
-
-		if(sol.degraded)
-			sol = resolver(v, 0, v.size() - 1);	
-
-		++i;
+		if (ok)
+			std::cout << "SI\n";
+		else
+			std::cout << "NO\n";
 	}
-
-	if (!sol.degraded)
-		std::cout << "NO\n";
-
-	else
-		std::cout << "SI\n";
 
 	return true;
 

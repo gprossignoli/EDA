@@ -10,58 +10,74 @@
 #include <vector>
 // función que resuelve el problema
 void resolver(std::map<char,char> const& oldD, std::map<char, char> const& newD) {
-	std::vector<char> erased;
-	std::vector<char> added;
-	std::vector<char> modified;
+	std::map<char,char> erased;
+	std::map<char,char> added;
+	std::map<char,char> modified;
+
 	auto iteratorToOldD = oldD.begin();
-	for (int i = 0; i < oldD.size(); ++i) {
+
+	while(iteratorToOldD != oldD.end()) {
 		auto iteratorToNewD = newD.find(iteratorToOldD->first);
 
 		if (iteratorToNewD == newD.end()) {
-			erased.push_back(iteratorToOldD->first);
+			erased.insert({ iteratorToOldD->first,iteratorToOldD->second });
 		}
 
 		else if (iteratorToNewD->second != iteratorToOldD->second) {
-			modified.push_back(iteratorToOldD->first);
+			modified.insert({ iteratorToOldD->first,iteratorToOldD->second });
 		}
 
 		++iteratorToOldD;
 	}
 
 	auto iteratorToNewD = newD.begin();
-	for (int i = 0; i < newD.size(); ++i) {
+	while(iteratorToNewD != newD.end()) {
 		auto iteratorToOldD = oldD.find(iteratorToNewD->first);
 
 		if (iteratorToOldD == oldD.end()) {
-			added.push_back(iteratorToNewD->first);
+			added.insert({ iteratorToNewD->first,iteratorToNewD->second });
 		}
 		
 		++iteratorToNewD;
 	}
 	
-	if (added.size() > 0) {
-		std::cout << "+ ";
-		for (int i = 0; i < added.size(); ++i) {
-			std::cout << added[i] << " ";
-		}
-		std::cout << '\n';
-	}
-	if (erased.size() > 0) {
-		std::cout << "- ";
-		for (int i = 0; i < erased.size(); ++i) {
-			std::cout << erased[i] << " ";
-		}
-		std::cout << '\n';
-	}
-	if (modified.size() > 0) {
-		std::cout << "* ";
-		for (int i = 0; i < modified.size(); ++i) {
-			std::cout << modified[i] << " ";
-		}
-		std::cout << '\n';
-	}
-	if (!added.size() > 0 && !erased.size() > 0 && !modified.size() > 0) {
+	if (added.empty() && erased.empty() && modified.empty()) {
 		std::cout << "Sin cambios\n";
+	}
+	else {
+		if (!added.empty()) {
+			std::cout << "+ ";
+			auto it = added.begin();
+			while (it != added.end()) {
+				std::cout << it->first;
+				++it;
+				if (it != added.end())
+					std::cout << " ";
+			}
+			std::cout << '\n';
+		}
+		if(!erased.empty()){
+			std::cout << "- ";
+			auto it = erased.begin();
+			while (it != erased.end()) {
+				std::cout << it->first;
+				++it;
+				if (it != erased.end())
+					std::cout << " ";
+			}
+			std::cout << '\n';
+		}
+		if (!modified.empty()) {
+			std::cout << "* ";
+			auto it = modified.begin();
+			while (it != modified.end()) {
+				std::cout << it->first;
+				++it;
+				if (it != modified.end())
+					std::cout << " ";
+			}
+			std::cout << '\n';
+		}
 	}
 	std::cout << "----\n";
 }

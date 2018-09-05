@@ -7,9 +7,10 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <vector>
 // función que resuelve el problema
-void resolver(std::map<char,char> const& oldD, std::map<char, char> const& newD) {
+void resolver(std::unordered_map<char,char> const& oldD, std::unordered_map<char, char> const& newD) {
 	std::map<char,char> erased;
 	std::map<char,char> added;
 	std::map<char,char> modified;
@@ -87,7 +88,7 @@ void resolver(std::map<char,char> const& oldD, std::map<char, char> const& newD)
 void resuelveCaso() {
 	// leer los datos de la entrada
 	std::string line;
-	std::map<char, char> oldDict,newDict;
+	std::unordered_map<char, char> oldDict,newDict;
 
 	std::getline(std::cin, line);
 	if (line != "") {
